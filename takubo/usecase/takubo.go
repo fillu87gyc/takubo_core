@@ -1,14 +1,24 @@
 package usecase
 
 import (
-	"github.com/fillu87gyc/takubo_core/domain"
+	"github.com/fillu87gyc/takubo_core/takubo/domain/model"
 )
 
-var takubo *domain.Takubo
+// type takuboUsecase struct {
+// 	svc service.TakuboService
+// }
 
-func GetInstance() *domain.Takubo {
-	if takubo == nil {
-		takubo = &domain.Takubo{}
+var _takubo *model.Takubo
+
+// func NewTakuboUsecase(repo Repo) {
+// 	_takubo = &model.Takubo{
+// 		Repo: repo,
+// 	}
+// }
+
+func GetTakuboSingleton() *model.Takubo {
+	if _takubo == nil {
+		_takubo = &model.Takubo{}
 	}
-	return takubo
+	return _takubo
 }

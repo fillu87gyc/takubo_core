@@ -1,29 +1,26 @@
 package main
 
-type StatePhase int
-
-const (
-	Detect StatePhase = iota
-	Talking
-	Forget
+import (
+	"github.com/fillu87gyc/takubo_core/takubo/domain/model"
+	"github.com/fillu87gyc/takubo_core/takubo/usecase"
+	"github.com/gin-gonic/gin"
 )
 
-type CurrentState struct {
-	Line  uint
-	Title string
-}
-
-type Takubo struct {
-	Phase        StatePhase
-	CurrentState CurrentState
-}
-
 func main() {
-	takubo := Takubo{
-		Phase: Detect,
-		CurrentState: CurrentState{
-			Line:  0,
-			Title: "",
-		},
-	}
+	takubo := usecase.GetTakuboSingleton()
+	r := gin.Default()
+	v1 := r.Group("/v1")
+	v1.GET("/speechrecog", speechrecog)
+}
+
+func speechrecog(c *gin.Context) {
+	takubo := usecase.GetTakuboSingleton()
+
+    if takubo.Phase == model.Detect{
+        takubo.
+    }
+
+	c.JSON(200, gin.H{
+		"message": "pong",
+	})
 }
