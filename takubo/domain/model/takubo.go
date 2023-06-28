@@ -1,9 +1,5 @@
 package model
 
-import (
-	"github.com/fillu87gyc/takubo_core/takubo/domain/repository"
-)
-
 type StatePhase int
 
 const (
@@ -20,5 +16,4 @@ type CurrentState struct {
 type Takubo struct {
 	Phase        StatePhase
 	CurrentState CurrentState
-	Repo         Repo
 }

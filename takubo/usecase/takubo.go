@@ -22,3 +22,6 @@ func GetTakuboSingleton() *model.Takubo {
 	}
 	return _takubo
 }
+
+type ITakuboUsecase interface {
+}
