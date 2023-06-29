@@ -1,5 +1,27 @@
 package config
 
+type network struct {
+	BackendIP     string
+	DynamixelIP   string
+	WizWebIP      string
+	BackendPort   int
+	DynamixelPort int
+	WizWebPort    int
+}
+
+var ApiVersion = "/v1/"
+
+func Network() network {
+	return network{
+		BackendIP:     BackendIP,
+		DynamixelIP:   DynamixelIP,
+		WizWebIP:      WizWebIP,
+		BackendPort:   BackendPort,
+		DynamixelPort: DynamixelPort,
+		WizWebPort:    WizWebPort,
+	}
+}
+
 const (
 	BackendIP     = "0.0.0.0"
 	DynamixelIP   = "0.0.0.0"

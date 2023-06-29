@@ -25,7 +25,10 @@ wake wordだった場合
   "text": "いまからね、桃太郎をね、話すよ",
   "state": "talking",
   "behavior":[
-    "track"
+    {
+        "do_time": 0.0,
+        "pose": "track"
+    }
   ]
 }
 ```
@@ -62,7 +65,10 @@ wake wordだった場合
     "text": "どんぶらこ、どんぶらこと",
     "state": "talking",
     "behavior":[
-        "track"
+        {
+            "do_time": 0.0,
+            "pose": "track"
+        }
     ]
 }
 ```
@@ -74,9 +80,15 @@ wake wordだった場合
 {
     "text": "だれとおばあさんがすんでいたんだっけ",
     "state": "forget",
-    "behavior": [
-        "think",
-        "track"
+    "behavior":[
+        {
+            "do_time": 2.0,
+            "pose": "look-up"
+        },
+        {
+            "do_time": 0.0,
+            "pose": "track"
+        }
     ]
 }
 ```
@@ -87,8 +99,9 @@ wake wordだった場合
 
 ```json
 {
-    "title": "momotaro",
-    "line_number": 2
+    "word": "おじいさん",
+    "line_number": 2,
+    "title": "momotaro"
 }
 ```
 
@@ -102,8 +115,14 @@ wake wordだった場合
     "text": "そうだ、それそれー",
     "state": "talking",
     "behavior":[
-        ["look-up", 5.0],
-        ["track", 0]
+        {
+            "do_time": 5.0,
+            "pose": "look-up"
+        },
+        {
+            "do_time": 0.0,
+            "pose": "track"
+        }
     ]
 }
 ```
@@ -114,8 +133,14 @@ wake wordだった場合
 {
     "text": "そうだっけ？",
     "behavior":[
-        ["look-up", 1.0],
-        ["track", 0]
+        {
+            "do_time": 1.0,
+            "pose": "look-up"
+        },
+        {
+            "do_time": 0.0,
+            "pose": "track"
+        }
     ]
 }
 ```
