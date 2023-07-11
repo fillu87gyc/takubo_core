@@ -20,7 +20,11 @@ func speechrecog(c *gin.Context) {
 		takubo.RequestDetect(apiVersion + "/detect/")
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(STATUS_OK, gin.H{
 		"message": "pong",
 	})
 }
+
+const (
+	STATUS_OK = 200
+)
