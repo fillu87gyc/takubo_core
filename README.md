@@ -47,7 +47,7 @@ wake wordだった場合
 
 ```json
 {
-    "title": "momotaro",
+    "regular_title": "momotaro",
     "line_number": 2
 }
 ```
