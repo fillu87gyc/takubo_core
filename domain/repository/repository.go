@@ -1,8 +1,11 @@
 package repository
 
-import "github.com/fillu87gyc/takubo_core/model"
+import (
+	"github.com/fillu87gyc/takubo_core/domain/model"
+)
 
-type Repository interface {
-	IsWakeWord(word string) (bool, error)
-	Fetch() (model.Behavior, error)
+type IRepository interface {
+	IsWakeWord(cond DetectParam) (model.Response, error)
+	FetchNextBehavior(cond TalkingParam) (model.Response, error)
+	IsCorrectWord(cond ForgetParam) (model.Response, error)
 }

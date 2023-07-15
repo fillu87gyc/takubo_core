@@ -383,7 +383,10 @@ code {
   <span class="hljs-attr">"text"</span>: <span class="hljs-string">"いまからね、桃太郎をね、話すよ"</span>,
   <span class="hljs-attr">"state"</span>: <span class="hljs-string">"talking"</span>,
   <span class="hljs-attr">"behavior"</span>:[
-    <span class="hljs-string">"track"</span>
+    {
+        <span class="hljs-attr">"do_time"</span>: <span class="hljs-number">0.0</span>,
+        <span class="hljs-attr">"pose"</span>: <span class="hljs-string">"track"</span>
+    }
   ]
 }
 </div></code></pre>
@@ -410,7 +413,10 @@ code {
     <span class="hljs-attr">"text"</span>: <span class="hljs-string">"どんぶらこ、どんぶらこと"</span>,
     <span class="hljs-attr">"state"</span>: <span class="hljs-string">"talking"</span>,
     <span class="hljs-attr">"behavior"</span>:[
-        <span class="hljs-string">"track"</span>
+        {
+            <span class="hljs-attr">"do_time"</span>: <span class="hljs-number">0.0</span>,
+            <span class="hljs-attr">"pose"</span>: <span class="hljs-string">"track"</span>
+        }
     ]
 }
 </div></code></pre>
@@ -437,7 +443,8 @@ code {
 <h3 id="request">request</h3>
 <pre class="hljs"><code><div>{
     <span class="hljs-attr">"word"</span>: <span class="hljs-string">"おじいさん"</span>,
-    <span class="hljs-attr">"line_number"</span>: <span class="hljs-number">2</span>
+    <span class="hljs-attr">"line_number"</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">"title"</span>: <span class="hljs-string">"momotaro"</span>
 }
 </div></code></pre>
 <h3 id="response">response</h3>
@@ -474,6 +481,16 @@ code {
         }
     ]
 }
+</div></code></pre>
+<h2 id="port%E7%95%AA%E5%8F%B7">port番号</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">const</span> (
+ BackendIP     = <span class="hljs-string">"0.0.0.0"</span>
+ DynamixelIP   = <span class="hljs-string">"0.0.0.0"</span>
+ WizWebIP      = <span class="hljs-string">"0.0.0.0"</span>
+ BackendPort   = <span class="hljs-string">"3303"</span>
+ DynamixelPort = <span class="hljs-string">"5550"</span>
+ WizWebPort    = <span class="hljs-string">"5551"</span>
+)
 </div></code></pre>
 
 </body>
