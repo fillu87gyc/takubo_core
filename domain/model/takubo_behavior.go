@@ -2,7 +2,7 @@ package model
 
 type Response struct {
 	Text     string     `json:"text"`
-	State    string     `json:"state"`
+	State    State      `json:"state"`
 	Behavior []Behavior `json:"behavior"`
 }
 

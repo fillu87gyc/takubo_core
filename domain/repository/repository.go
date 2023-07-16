@@ -1,11 +1,11 @@
 package repository
 
-import (
-	"github.com/fillu87gyc/takubo_core/domain/model"
-)
+import "github.com/fillu87gyc/takubo_core/domain/model"
 
-type IRepository interface {
-	IsWakeWord(cond DetectParam) (model.Response, error)
-	FetchNextBehavior(cond TalkingParam) (model.Response, error)
-	IsCorrectWord(cond ForgetParam) (model.Response, error)
+type ITakuboRepository interface {
+	// NextAccessLineNumber, Titleを返す
+	GetCurrentState() (int, string, bool, model.State)
+	// Responseで受け取ったStateによってごねごねする
+	SetCurrentState(state model.State) error
+	SetTitle(title string) error
 }
