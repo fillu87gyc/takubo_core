@@ -2,10 +2,12 @@ package usecase
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/fillu87gyc/lambda-go/lib/zap"
 	"github.com/fillu87gyc/takubo_core/domain/model"
 	"github.com/fillu87gyc/takubo_core/domain/repository"
+	"github.com/fillu87gyc/takubo_core/lib"
 )
 
 type ITakuboUsecase interface {
@@ -26,10 +28,13 @@ type takuboUsecase struct {
 
 // SpeechRecog implements ITakuboUsecase.
 func (takubo *takuboUsecase) SpeechRecog(recog string) error {
+
 	ln, t, speechRecogEnable, state := takubo.repository.GetCurrentState()
 	if !speechRecogEnable {
-		zap.GetLogger().Info("SpeechRecogが有効ではありません" + fmt.Sprintf("ln = %d, title = %s", ln, t))
+		zap.GetLogger().Info(recog + "を音声認識しましたが、SpeechRecogが有効ではありません" + fmt.Sprintf("ln = %d, title = %s", ln, t))
 		return nil
+	} else {
+		zap.GetLogger().Info(recog + "を音声認識しました")
 	}
 	switch state {
 	case model.Detect:
@@ -51,8 +56,26 @@ func NewTakuboUsecase(client repository.IBackendRepository, repo repository.ITak
 	}
 }
 
-func (takubo *takuboUsecase) Do(model.Response) error {
-	panic("unimplemented")
+func (takubo *takuboUsecase) Do(r model.Response) error {
+	zap.GetLogger().Info(fmt.Sprintf(lib.Color("[[wizavo]]: %s || ", lib.Yellow)+
+		lib.Color("[[dynamixel]]: %+v", lib.Cyan)+
+		lib.Color("[[state]]: %s", lib.Green),
+		r.Text, r.Behavior, r.State))
+
+	takubo.repository.SetCurrentState(model.Speaking)
+	zap.GetLogger().Info("Wizavo発話中")
+	for _, b := range []int{0, 1, 2} {
+		time.Sleep(1.0 * time.Second)
+		zap.GetLogger().Debug(lib.Color(" Wizavo発話[["+r.Text+"]]終了まで", lib.Yellow) + fmt.Sprintf("%d秒", 3-b))
+	}
+
+	// time.Sleep(config.WaitTimeDuringTurn * time.Second)
+	for _, b := range []int{0, 1, 2, 3} {
+		time.Sleep(1.0 * time.Second)
+		zap.GetLogger().Debug(lib.Color("===========次の行動までのマチ===========||"+fmt.Sprintf("%d秒", 4-b), lib.Cyan))
+	}
+	takubo.repository.SetCurrentState(r.State)
+	return nil
 }
 
 // Detect implements ITakuboUsecase.
@@ -93,13 +116,13 @@ func (takubo *takuboUsecase) Forget(targetWord string) error {
 		// Forgetの場合はここで終了
 		return nil
 	}
+	takubo.repository.SetCurrentState(model.SpeakEnd)
 	takubo.Talking()
 	return nil
 }
 
-// SetState implements ITakuboUsecase.
-func (*takuboUsecase) SetState(state model.State) error {
-	panic("unimplemented")
+func (takubo *takuboUsecase) SetState(state model.State) error {
+	return takubo.repository.SetCurrentState(state)
 }
 
 // Talking implements ITakuboUsecase.

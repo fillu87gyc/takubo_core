@@ -18,7 +18,6 @@ func main() {
 }
 func MiddleWareLogger(l *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Next()
 		l.Info("",
 			zap.Int("status", c.Writer.Status()),
 			zap.String("method", c.Request.Method),
@@ -26,5 +25,6 @@ func MiddleWareLogger(l *zap.Logger) gin.HandlerFunc {
 			zap.String("query", c.Request.URL.RawQuery),
 			zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
 		)
+		c.Next()
 	}
 }

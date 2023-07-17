@@ -43,5 +43,10 @@ func (c Client) FetchNameIdentification(recog string) (string, error) {
 		zap.GetLogger().Error("レスポンスボディのパースに失敗しました:" + err.Error())
 		return "", err
 	}
+	if responseBody.RegularTitle == "" {
+		zap.GetLogger().Info("名寄せ結果なし")
+	} else {
+		zap.GetLogger().Info("名寄せ結果 == " + responseBody.RegularTitle)
+	}
 	return responseBody.RegularTitle, nil
 }

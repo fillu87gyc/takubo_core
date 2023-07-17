@@ -32,14 +32,20 @@ func (t *takuboRepository) SetCurrentState(state model.State) error {
 	switch state {
 	case model.Detect:
 		t.NextAccessLineNumber = 0
-		t.ListenFlag = false
-		zap.GetLogger().Info("response = detect" + fmt.Sprintf("%+v", t))
+		t.ListenFlag = true
+		zap.GetLogger().Info("response = detect//  " + fmt.Sprintf("%+v", t))
 	case model.Talking:
 		t.NextAccessLineNumber++
 		t.ListenFlag = false
-		zap.GetLogger().Info("response = talking" + fmt.Sprintf("%+v", t))
+		zap.GetLogger().Info("response = talking//  " + fmt.Sprintf("%+v", t))
 	case model.Forget:
 		t.ListenFlag = true
+		zap.GetLogger().Info("response = forget//  " + fmt.Sprintf("%+v", t))
+	case model.Speaking:
+		t.ListenFlag = false
+		zap.GetLogger().Info("response = speaking//  " + fmt.Sprintf("%+v", t))
+	case model.SpeakEnd:
+		zap.GetLogger().Info("response = speak_end//  " + fmt.Sprintf("%+v", t))
 	default:
 		zap.GetLogger().Fatal("意図していないstateです" + fmt.Sprintf("%+v", t))
 		panic("Undefined state")
