@@ -1,26 +1,30 @@
 package main
 
 import (
-	"github.com/fillu87gyc/takubo_core/takubo/domain/model"
-	"github.com/fillu87gyc/takubo_core/takubo/usecase"
+	z "github.com/fillu87gyc/lambda-go/lib/zap"
+	"github.com/fillu87gyc/takubo_core/adapter/http/output"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func main() {
-	takubo := usecase.GetTakuboSingleton()
-	r := gin.Default()
-	v1 := r.Group("/v1")
-	v1.GET("/speechrecog", speechrecog)
+	logger := z.GetLogger()
+	e := gin.New()
+	e.Use(MiddleWareLogger(logger))
+	e.Use(gin.Recovery())
+
+	takubo := output.InitRouter(e)
+	takubo.Run(":8080")
 }
-
-func speechrecog(c *gin.Context) {
-	takubo := usecase.GetTakuboSingleton()
-
-    if takubo.Phase == model.Detect{
-        takubo.
-    }
-
-	c.JSON(200, gin.H{
-		"message": "pong",
-	})
+func MiddleWareLogger(l *zap.Logger) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		l.Info("",
+			zap.Int("status", c.Writer.Status()),
+			zap.String("method", c.Request.Method),
+			zap.String("path", c.Request.URL.Path),
+			zap.String("query", c.Request.URL.RawQuery),
+			zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
+		)
+		c.Next()
+	}
 }
