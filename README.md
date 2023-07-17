@@ -50,7 +50,7 @@ wake wordだった場合
 
 ```json
 {
-    "title": "momotaro",
+    "regular_title": "momotaro",
     "line_number": 2
 }
 ```
@@ -99,9 +99,9 @@ wake wordだった場合
 
 ```json
 {
-    "word": "おじいさん",
+    "regular_title": "momotaro",
     "line_number": 2,
-    "title": "momotaro"
+    "target_word" : "おじいさん"
 }
 ```
 
