@@ -27,7 +27,7 @@ func (n *Network) BackendAddr() string {
 }
 
 func (n *Network) DynamixelAddr() string {
-	return "http://" + n.dynamixelIP + ":" + (n.dynamixelIP)
+	return "http://" + n.dynamixelIP + ":" + n.dynamixelPort
 }
 
 func (n *Network) WizWebAddr() string {

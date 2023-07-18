@@ -1,6 +1,8 @@
 package repository
 
-import "github.com/fillu87gyc/takubo_core/domain/model"
+import (
+	"github.com/fillu87gyc/takubo_core/domain/model"
+)
 
 type ITakuboRepository interface {
 	// NextAccessLineNumber, Titleを返す
