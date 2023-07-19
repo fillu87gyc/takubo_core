@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 
+	errort "github.com/fillu87gyc/lambda-go/errorT"
 	"github.com/fillu87gyc/lambda-go/lib/zap"
 	"github.com/fillu87gyc/takubo_core/config"
 	"github.com/fillu87gyc/takubo_core/domain/model"
@@ -37,6 +38,11 @@ func (c Client) FetchSequential(lineNumber int, regularTitle string) (model.Resp
 	if err != nil {
 		zap.GetLogger().Error("レスポンスの読み取りに失敗しました:" + err.Error())
 		return model.Response{}, err
+	}
+	//statusコードが200かチェックしてエラーを出す
+	if resp.StatusCode != http.StatusOK {
+		zap.GetLogger().Error("レスポンスのステータスコードが200ではありませんでした:" + string(body))
+		return model.Response{}, errort.ErrOutOfRange
 	}
 
 	zap.GetLogger().Info("レスポンスボディ:" + string(body))

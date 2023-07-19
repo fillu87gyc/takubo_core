@@ -22,7 +22,7 @@ func (v *Voice) Speak(text string) error {
 	resp, err := http.Get(url)
 	if err != nil {
 		zap.GetLogger().Error("wizavoとの接続に失敗しました:" + err.Error())
-		return err
+		panic(err)
 	}
 	defer resp.Body.Close()
 	return nil

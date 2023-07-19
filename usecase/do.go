@@ -13,7 +13,7 @@ import (
 
 func (takubo *takuboUsecase) Do(r model.Response) error {
 	zap.GetLogger().Info(fmt.Sprintf(lib.Color("[[wizavo]]: %s || ", lib.Yellow)+
-		lib.Color("[[dynamixel]]: %+v", lib.Cyan)+
+		lib.Color("[[dynamixel]]: %+v ||", lib.Cyan)+
 		lib.Color("[[state]]: %s", lib.Green),
 		r.Text, r.Behavior, r.State))
 
@@ -30,12 +30,7 @@ func (takubo *takuboUsecase) Do(r model.Response) error {
 	}
 	zap.GetLogger().Debug(lib.Color(fmt.Sprintf("セットポーズ %+v", repoModel), lib.Green))
 	takubo.motor.SetPosture(repoModel)
-	takubo.repository.SetCurrentState(model.Speaking)
-	zap.GetLogger().Info("Wizavo発話中")
-	zap.GetLogger().Debug(lib.Color(" Wizavo発話[["+r.Text+"]]終了まで待機", lib.Yellow))
-	takubo.voice.Speak(r.Text)
-	takubo.repository.SetCurrentState(model.SpeakEnd)
-
+	takubo.Speak(r.Text)
 	takubo.repository.SetCurrentState(r.State)
 	time.Sleep(config.WaitTimeDuringTurn)
 	return nil

@@ -21,9 +21,16 @@ func (takubo *takuboUsecase) SpeechRecog(recog string) error {
 	case model.Talking:
 		panic("意図しない状態遷移です。 stateがtalkingなのにSpeechRecogが呼ばれました")
 	case model.Forget:
+		select {
+		case takubo.forgetCond.spokenChannel <- struct{}{}:
+			zap.GetLogger().Info(fmt.Sprintf("forgetCond.spokenChannelに送信しました :buffer = %d", len(takubo.forgetCond.spokenChannel)))
+		default:
+			zap.GetLogger().Info("spokenチャンネルが閉じています。送信できません。")
+		}
+
 		return takubo.Forget(recog)
 	default:
-		zap.GetLogger().Fatal("意図していないstateです" + fmt.Sprintf("%+v", takubo))
+		zap.GetLogger().Fatal("意図していないstateです: " + fmt.Sprintf("%+v", state))
 		panic("Undefined state")
 	}
 }

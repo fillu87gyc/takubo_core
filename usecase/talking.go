@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	errort "github.com/fillu87gyc/lambda-go/errorT"
 	"github.com/fillu87gyc/lambda-go/lib/zap"
 	"github.com/fillu87gyc/takubo_core/config"
 	"github.com/fillu87gyc/takubo_core/domain/model"
@@ -13,21 +14,36 @@ func (takubo *takuboUsecase) Talking() error {
 	ln, title, _, _ := takubo.repository.GetCurrentState()
 	response, err := takubo.client.FetchSequential(ln, title)
 	if err != nil {
-		zap.GetLogger().Fatal("DetectのBFFへのリクエストに失敗しました:" + err.Error())
-		return err
+		if err == errort.ErrOutOfRange {
+			// ErrOutOfRangeはちょっとだけ許す
+			zap.GetLogger().Warn("DetectのBFFへのリクエストに失敗しました。多分終わりまでいったのかな？:" + err.Error())
+			takubo.repository.SetCurrentState(model.Detect) //初期状態に返してあげる
+			return nil
+		}
+		panic("BFFとの疎通に失敗" + err.Error())
 	}
 	zap.GetLogger().Info("DetectのBFFへのリクエストに成功しました:" + fmt.Sprintf("%+v", response))
 	// responseに沿って動作を開始
 	// DoはWizavoが終わるまでブロッキングする
-	if response.State == model.Forget {
-		// Forgetの場合はここで終了
-		time.Sleep(config.THINK_TIME)
-		takubo.voice.Speak("えっとー。")
+	if response.State != model.Forget {
+		// forget状態に移動していないのでそのまま次へ
 		takubo.Do(response)
+		takubo.Talking()
 		return nil
 	}
-	takubo.Do(response)
+	// Forgetの場合はforgetルーチンスタート
+	time.Sleep(config.THINK_TIME)
+	takubo.Speak("えっとー。")
+	time.Sleep(1 * time.Second)
 
-	takubo.Talking()
+	takubo.Do(response)
+	takubo.forgetCond.bestAnswer = response.BestAnswer
+	takubo.forgetCond.question = response.Text
+	takubo.forgetCond.closeChannel = make(chan struct{})
+	takubo.forgetCond.spokenChannel = make(chan struct{}, 100) //十分大きい値
+	go takubo.BeginTalkingHint(
+		takubo.forgetCond.closeChannel,
+		takubo.forgetCond.spokenChannel,
+	)
 	return nil
 }

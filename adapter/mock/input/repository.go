@@ -26,30 +26,47 @@ func (t *takuboRepository) GetCurrentState() (int, string, bool, model.State) {
 	return t.NextAccessLineNumber, t.Title, t.ListenFlag, t.State
 }
 
+var tmpListenFlag = false
+var tmpState = model.Detect
+
 // SetCurrentState implements repository.ITakuboRepository.
 func (t *takuboRepository) SetCurrentState(state model.State) error {
-	t.State = state
 	switch state {
 	case model.Detect:
+		t.State = state
 		t.NextAccessLineNumber = 0
 		t.ListenFlag = true
-		zap.GetLogger().Info("response = detect//  " + fmt.Sprintf("%+v", t))
+		zap.GetLogger().Info("set state response = detect//  " + fmt.Sprintf("%+v", t))
 	case model.Talking:
+		t.State = state
 		t.NextAccessLineNumber++
 		t.ListenFlag = false
-		zap.GetLogger().Info("response = talking//  " + fmt.Sprintf("%+v", t))
+		zap.GetLogger().Info("set state response = talking//  " + fmt.Sprintf("%+v", t))
 	case model.Forget:
+		t.State = state
 		t.ListenFlag = true
-		zap.GetLogger().Info("response = forget//  " + fmt.Sprintf("%+v", t))
+		zap.GetLogger().Info("set state response = forget//  " + fmt.Sprintf("%+v", t))
 	case model.Speaking:
+		tmpListenFlag = t.ListenFlag
+		tmpState = t.State
 		t.ListenFlag = false
-		zap.GetLogger().Info("response = speaking//  " + fmt.Sprintf("%+v", t))
+		t.State = state
+		zap.GetLogger().Info(" ----speaking----  ")
+		return nil
 	case model.SpeakEnd:
-		zap.GetLogger().Info("response = speak_end//  " + fmt.Sprintf("%+v", t))
+		if t.State != model.Speaking {
+			zap.GetLogger().Fatal("意図していないstateです。speakじゃない場所からspeakEndにきました" + fmt.Sprintf("%+v", t))
+			// panic("Undefined state")
+		}
+		t.ListenFlag = tmpListenFlag
+		t.State = tmpState
+		zap.GetLogger().Info(" ----speak_end----  ")
+		return nil
 	default:
 		zap.GetLogger().Fatal("意図していないstateです" + fmt.Sprintf("%+v", t))
 		panic("Undefined state")
 	}
+
 	return nil
 }
 
