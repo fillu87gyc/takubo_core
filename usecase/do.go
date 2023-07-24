@@ -24,8 +24,9 @@ func (takubo *takuboUsecase) Do(r model.Response) error {
 			zap.GetLogger().Error("未定義のポーズがBFFから送信されたため終了します:" + adapterModel.Pose + ":" + err.Error())
 		}
 		repoModel[i] = repository.PoseBehavior{
-			Pose:   p,
-			DoTime: adapterModel.DoTime,
+			DoTime:  adapterModel.DoTime,
+			Pose:    p,
+			NodFlag: r.State == model.Talking,
 		}
 	}
 	zap.GetLogger().Debug(lib.Color(fmt.Sprintf("セットポーズ %+v", repoModel), lib.Green))
