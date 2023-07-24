@@ -34,7 +34,7 @@ func (takubo *takuboUsecase) Talking() error {
 	// Forgetの場合はforgetルーチンスタート
 	time.Sleep(config.THINK_TIME)
 	takubo.Speak("えっとー。")
-	time.Sleep(1 * time.Second)
+	time.Sleep(3 * time.Second)
 
 	takubo.Do(response)
 	takubo.forgetCond.bestAnswer = response.BestAnswer

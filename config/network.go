@@ -35,10 +35,10 @@ func (n *Network) WizWebAddr() string {
 }
 
 const (
-	BackendIP     = "0.0.0.0"
-	DynamixelIP   = "0.0.0.0"
-	WizWebIP      = "0.0.0.0"
+	BackendIP     = "192.168.178.230"
+	DynamixelIP   = "192.168.178.230"
+	WizWebIP      = "192.168.178.116"
 	BackendPort   = "3303"
-	DynamixelPort = "5550"
+	DynamixelPort = "3333"
 	WizWebPort    = "5551"
 )

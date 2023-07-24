@@ -55,6 +55,6 @@ func (takubo *takuboUsecase) forgetHint(behaviorPattern int, progressCount int) 
 func (t *takuboUsecase) remembered() {
 	close(t.forgetCond.closeChannel)
 	t.SetState(model.Talking)
-	time.Sleep(1 * time.Second)
+	time.Sleep(3 * time.Second)
 	t.Talking()
 }

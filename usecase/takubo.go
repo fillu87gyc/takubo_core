@@ -72,7 +72,7 @@ func (takubo *takuboUsecase) Speak(text string) error {
 func (takubo *takuboUsecase) BeginTalkingHint(cancel chan struct{}, spoken chan struct{}) {
 	behaviorPattern := 0
 	progressCount := 0
-	period := 10 * time.Second
+	period := 5 * time.Second
 	ticker := time.NewTicker(period)
 	defer ticker.Stop()
 	defer close(spoken)

@@ -30,9 +30,15 @@ func (takubo *takuboUsecase) Do(r model.Response) error {
 		}
 	}
 	zap.GetLogger().Debug(lib.Color(fmt.Sprintf("セットポーズ %+v", repoModel), lib.Green))
-	takubo.motor.SetPosture(repoModel)
-	takubo.Speak(r.Text)
-	takubo.repository.SetCurrentState(r.State)
+	if e := takubo.motor.SetPosture(repoModel); e != nil {
+		zap.GetLogger().Error(e.Error())
+	}
+	if e := takubo.Speak(r.Text); e != nil {
+		zap.GetLogger().Error(e.Error())
+	}
+	if e := takubo.repository.SetCurrentState(r.State); e != nil {
+		zap.GetLogger().Error(e.Error())
+	}
 	time.Sleep(config.WaitTimeDuringTurn)
 	return nil
 }
