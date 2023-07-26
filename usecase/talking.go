@@ -18,6 +18,14 @@ func (takubo *takuboUsecase) Talking() error {
 			// ErrOutOfRangeはちょっとだけ許す
 			zap.GetLogger().Warn("DetectのBFFへのリクエストに失敗しました。多分終わりまでいったのかな？:" + err.Error())
 			takubo.repository.SetCurrentState(model.Detect) //初期状態に返してあげる
+			if e := takubo.Do(model.Response{
+				Text:       "",
+				State:      model.Detect,
+				Behavior:   []model.Behavior{{Pose: "track", DoTime: 1.0}},
+				BestAnswer: "",
+			}); e != nil {
+				zap.GetLogger().Error("初期状態に戻すのに失敗しました。")
+			}
 			return nil
 		}
 		panic("BFFとの疎通に失敗" + err.Error())
@@ -27,16 +35,19 @@ func (takubo *takuboUsecase) Talking() error {
 	// DoはWizavoが終わるまでブロッキングする
 	if response.State != model.Forget {
 		// forget状態に移動していないのでそのまま次へ
-		takubo.Do(response)
+		if err := takubo.Do(response); err != nil {
+			zap.GetLogger().Error("Doの実行に失敗しました。")
+		}
 		takubo.Talking()
 		return nil
 	}
 	// Forgetの場合はforgetルーチンスタート
 	time.Sleep(config.THINK_TIME)
 	takubo.Speak("えっとー。")
-	time.Sleep(3 * time.Second)
 
-	takubo.Do(response)
+	if err := takubo.Do(response); err != nil {
+		zap.GetLogger().Error("Doの実行に失敗しました。")
+	}
 	takubo.forgetCond.bestAnswer = response.BestAnswer
 	takubo.forgetCond.question = response.Text
 	takubo.forgetCond.closeChannel = make(chan struct{})
