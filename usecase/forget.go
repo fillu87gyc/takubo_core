@@ -42,7 +42,14 @@ func (takubo *takuboUsecase) forgetHint(behaviorPattern int, progressCount int) 
 		if count >= len(runes) {
 			// 思い出す
 			zap.GetLogger().Info(lib.Color("ヒントで全部でちゃった", lib.Yellow))
-			takubo.Speak("思い出したー")
+			if err := takubo.Do(model.Response{
+				Text:       "思い出したー",
+				State:      model.Talking,
+				Behavior:   []model.Behavior{{Pose: "look-up", DoTime: 3.0}, {Pose: "track", DoTime: 3.0}},
+				BestAnswer: ans,
+			}); err != nil {
+				zap.GetLogger().Error("Doの処理に失敗しました:" + err.Error())
+			}
 			takubo.remembered()
 			return
 		}
@@ -54,7 +61,7 @@ func (takubo *takuboUsecase) forgetHint(behaviorPattern int, progressCount int) 
 }
 func (t *takuboUsecase) remembered() {
 	close(t.forgetCond.closeChannel)
-	t.SetState(model.Talking)
+	// t.SetState(model.Talking)
 	time.Sleep(3 * time.Second)
 	t.Talking()
 }
