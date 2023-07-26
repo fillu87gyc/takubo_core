@@ -50,7 +50,7 @@ func (takubo *takuboUsecase) Talking() error {
 	}
 	takubo.forgetCond.bestAnswer = response.BestAnswer
 	takubo.forgetCond.question = response.Text
-	takubo.forgetCond.closeChannel = make(chan struct{})
+	takubo.forgetCond.closeChannel = make(chan struct{}, 100)
 	takubo.forgetCond.spokenChannel = make(chan struct{}, 100) //十分大きい値
 	go takubo.BeginTalkingHint(
 		takubo.forgetCond.closeChannel,
