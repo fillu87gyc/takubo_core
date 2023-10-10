@@ -8,6 +8,6 @@ type Response struct {
 }
 
 type Behavior struct {
-	DoTime int64  `json:"do_time"`
-	Pose   string `json:"pose"`
+	DoTime float64 `json:"do_time"`
+	Pose   string  `json:"pose"`
 }

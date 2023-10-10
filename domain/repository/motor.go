@@ -12,7 +12,7 @@ const (
 )
 
 type PoseBehavior struct {
-	DoTime  int64      `json:"do_time"`
+	DoTime  float64    `json:"do_time"`
 	Pose    PresetPose `json:"pose"`
 	NodFlag bool       `json:"nod_flag"`
 }

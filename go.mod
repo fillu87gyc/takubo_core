@@ -1,6 +1,6 @@
 module github.com/fillu87gyc/takubo_core
 
-go 1.20
+go 1.21.1
 
 require (
 	github.com/fillu87gyc/lambda-go v0.0.0-20230716050109-e9ce4dd91724

@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/fillu87gyc/lambda-go/lib/zap"
 	"github.com/fillu87gyc/takubo_core/domain/model"
@@ -28,11 +27,13 @@ func (takubo *takuboUsecase) Forget(targetWord string) error {
 
 func (takubo *takuboUsecase) forgetHint(behaviorPattern int, progressCount int) {
 	zap.GetLogger().Info(fmt.Sprintf("behaviorPattern: %d, progressCount: %d", behaviorPattern, progressCount))
-	switch behaviorPattern % 3 {
+	switch behaviorPattern {
 	case FIXEDTEXT:
 		takubo.Speak("なんだっけ？")
 	case INTERROGATIVE_SENTENCE:
 		takubo.Speak(takubo.forgetCond.question)
+	case CONTINUE_FILLER:
+		takubo.Speak("あれだよ、")
 	case SMALLAMOUNTS:
 		count := progressCount
 		ans := takubo.forgetCond.bestAnswer
@@ -63,6 +64,6 @@ func (t *takuboUsecase) remembered() {
 	t.forgetCond.spokenChannel <- struct{}{}
 	t.forgetCond.closeChannel <- struct{}{}
 	// t.SetState(model.Talking)
-	time.Sleep(3 * time.Second)
+	// time.Sleep(config.WaitTimeDuringTurn)
 	t.Talking()
 }

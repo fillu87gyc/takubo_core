@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"fmt"
+	"math/rand"
 	"time"
 
 	"github.com/fillu87gyc/lambda-go/lib/zap"
@@ -33,6 +35,8 @@ const (
 	FIXEDTEXT = iota
 	//疑問文を繰り返す
 	INTERROGATIVE_SENTENCE
+	//あれだよ
+	CONTINUE_FILLER
 	//小出しする
 	SMALLAMOUNTS
 )
@@ -72,7 +76,7 @@ func (takubo *takuboUsecase) Speak(text string) error {
 func (takubo *takuboUsecase) BeginTalkingHint(cancel chan struct{}, spoken chan struct{}) {
 	behaviorPattern := 0
 	progressCount := 0
-	period := 10 * time.Second
+	period := 5 * time.Second
 	ticker := time.NewTicker(period)
 	defer ticker.Stop()
 	defer close(spoken)
@@ -90,11 +94,18 @@ func (takubo *takuboUsecase) BeginTalkingHint(cancel chan struct{}, spoken chan 
 					<-spoken
 				}
 			default:
-				if (behaviorPattern % 3) == SMALLAMOUNTS {
-					progressCount++
+				behaviorPattern = rand.Intn(4)
+				zap.GetLogger().Debug(fmt.Sprintf("ランダム値は%d", behaviorPattern))
+				// if (behaviorPattern % 4) == SMALLAMOUNTS {
+				if behaviorPattern == SMALLAMOUNTS {
+					if rand.Float32() < 0.1 {
+						behaviorPattern = CONTINUE_FILLER
+					} else {
+						progressCount++
+					}
 				}
 				takubo.forgetHint(behaviorPattern, progressCount)
-				behaviorPattern++
+				// behaviorPattern++
 			}
 		}
 	}
