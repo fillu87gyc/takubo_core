@@ -55,7 +55,7 @@ func (t *takuboRepository) SetCurrentState(state model.State) error {
 		return nil
 	case model.SpeakEnd:
 		if t.State != model.Speaking {
-			zap.GetLogger().Fatal("意図していないstateです。speakじゃない場所からspeakEndにきました" + fmt.Sprintf("%+v", t))
+			zap.GetLogger().Warn("意図していないstateです。speakじゃない場所からspeakEndにきました" + fmt.Sprintf("%+v", t))
 			// panic("Undefined state")
 		}
 		t.ListenFlag = tmpListenFlag
