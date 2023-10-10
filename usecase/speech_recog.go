@@ -5,6 +5,7 @@ import (
 
 	"github.com/fillu87gyc/lambda-go/lib/zap"
 	"github.com/fillu87gyc/takubo_core/domain/model"
+	"github.com/fillu87gyc/takubo_core/lib"
 )
 
 func (takubo *takuboUsecase) SpeechRecog(recog string) error {
@@ -14,7 +15,7 @@ func (takubo *takuboUsecase) SpeechRecog(recog string) error {
 		zap.GetLogger().Info(recog + "LinstenFlagを使ってないので受け入れるよー" + fmt.Sprintf("ln = %d, title = %s", ln, t))
 		// return nil
 	} else {
-		zap.GetLogger().Info(recog + "を音声認識しました")
+		zap.GetLogger().Info(lib.Color((recog + "を音声認識しました"), lib.Red))
 	}
 	switch state {
 	case model.Detect:
