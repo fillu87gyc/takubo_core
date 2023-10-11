@@ -5,18 +5,20 @@ import (
 
 	"github.com/fillu87gyc/lambda-go/lib/zap"
 	"github.com/fillu87gyc/takubo_core/domain/model"
-	"github.com/fillu87gyc/takubo_core/lib"
 )
 
 func (takubo *takuboUsecase) SpeechRecog(recog string) error {
-	ln, t, speechRecogEnable, state := takubo.repository.GetCurrentState()
-
-	if !speechRecogEnable {
-		zap.GetLogger().Info(recog + "LinstenFlagを使ってないので受け入れるよー" + fmt.Sprintf("ln = %d, title = %s", ln, t))
-		// return nil
-	} else {
-		zap.GetLogger().Info(lib.Color((recog + "を音声認識しました"), lib.Red))
+	// ln, t, speechRecogEnable, state := takubo.repository.GetCurrentState()
+	_, _, _, state := takubo.repository.GetCurrentState()
+	if state == model.Talking {
+		return nil
 	}
+	// if !speechRecogEnable {
+	// 	zap.GetLogger().Info(recog + "LinstenFlagを使ってないので受け入れるよー" + fmt.Sprintf("ln = %d, title = %s", ln, t))
+	// 	// return nil
+	// } else {
+	// 	zap.GetLogger().Info(lib.Color((recog + "を音声認識しました"), lib.Red))
+	// }
 	switch state {
 	case model.Detect:
 		return takubo.Detect(recog)
@@ -33,14 +35,6 @@ func (takubo *takuboUsecase) SpeechRecog(recog string) error {
 		return takubo.Forget(recog)
 	default:
 		zap.GetLogger().Error("意図していないstateです: " + fmt.Sprintf("%+v", state))
-		//TODO
-		defer func() {
-			if r := recover(); r != nil {
-				return
-			}
-		}()
-		takubo.forgetCond.spokenChannel <- struct{}{}
-		return takubo.Forget(recog)
 	}
 	return nil
 }
