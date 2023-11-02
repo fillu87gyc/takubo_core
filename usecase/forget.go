@@ -61,6 +61,7 @@ func (takubo *takuboUsecase) forgetHint(behaviorPattern int, progressCount int) 
 }
 func (t *takuboUsecase) remembered() {
 	zap.GetLogger().Info("くろーずしました")
+
 	t.forgetCond.spokenChannel <- struct{}{}
 	t.forgetCond.closeChannel <- struct{}{}
 	// t.SetState(model.Talking)

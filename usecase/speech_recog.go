@@ -2,8 +2,10 @@ package usecase
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/fillu87gyc/lambda-go/lib/zap"
+	"github.com/fillu87gyc/takubo_core/config"
 	"github.com/fillu87gyc/takubo_core/domain/model"
 )
 
@@ -36,5 +38,21 @@ func (takubo *takuboUsecase) SpeechRecog(recog string) error {
 	default:
 		zap.GetLogger().Error("意図していないstateです: " + fmt.Sprintf("%+v", state))
 	}
+	return nil
+}
+
+func (takubo *takuboUsecase) SetRecognitionState(isStart bool) error {
+	var s string
+	if s = "stop"; isStart {
+		s = "start"
+	}
+	network := config.NewNetwork()
+	url := network.RecogAddr() + "/" + s
+	resp, err := http.Get(url)
+	if err != nil {
+		zap.GetLogger().Error("speech recogとの接続に失敗しました:" + err.Error())
+		return err
+	}
+	defer resp.Body.Close()
 	return nil
 }

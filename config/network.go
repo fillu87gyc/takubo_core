@@ -7,6 +7,8 @@ type Network struct {
 	backendPort   string
 	dynamixelPort string
 	wizWebPort    string
+	recogIP       string
+	recogPort     string
 }
 
 var ApiVersion = "/v2/"
@@ -19,6 +21,8 @@ func NewNetwork() Network {
 		backendPort:   BackendPort,
 		dynamixelPort: DynamixelPort,
 		wizWebPort:    WizWebPort,
+		recogIP:       RecogIP,
+		recogPort:     RecogPort,
 	}
 }
 
@@ -34,11 +38,17 @@ func (n *Network) WizWebAddr() string {
 	return "http://" + n.wizWebIP + ":" + n.wizWebPort
 }
 
+func (n *Network) RecogAddr() string {
+	return "http://" + n.recogIP + ":" + n.recogPort
+}
+
 const (
 	BackendIP     = "localhost"
 	DynamixelIP   = "localhost"
 	WizWebIP      = "localhost"
+	RecogIP       = "localhost"
 	BackendPort   = "3303"
 	DynamixelPort = "3333"
 	WizWebPort    = "5551"
+	RecogPort     = "5999"
 )

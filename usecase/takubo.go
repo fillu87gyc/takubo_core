@@ -68,8 +68,10 @@ func (takubo *takuboUsecase) SetState(state model.State) error {
 
 func (takubo *takuboUsecase) Speak(text string) error {
 	// takubo.repository.SetCurrentState(model.Speaking)
+	takubo.SetRecognitionState(false)
 	zap.GetLogger().Debug(lib.Color(" Wizavo発話[["+text+"]]終了まで待機", lib.Yellow))
 	err := takubo.voice.Speak(text)
+	takubo.SetRecognitionState(true)
 	// takubo.repository.SetCurrentState(model.SpeakEnd)
 	return err
 }

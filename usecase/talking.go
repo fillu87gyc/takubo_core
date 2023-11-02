@@ -17,6 +17,7 @@ func (takubo *takuboUsecase) Talking() error {
 		if err == errort.ErrOutOfRange {
 			// ErrOutOfRangeはちょっとだけ許す
 			zap.GetLogger().Warn("DetectのBFFへのリクエストに失敗しました。多分終わりまでいったのかな？:" + err.Error())
+			takubo.SetRecognitionState(true)
 			takubo.repository.SetCurrentState(model.Detect) //初期状態に返してあげる
 			if e := takubo.Do(model.Response{
 				Text:       "",
@@ -48,6 +49,7 @@ func (takubo *takuboUsecase) Talking() error {
 	if err := takubo.Do(response); err != nil {
 		zap.GetLogger().Error("Doの実行に失敗しました。")
 	}
+	takubo.SetRecognitionState(true)
 	takubo.forgetCond.bestAnswer = response.BestAnswer
 	takubo.forgetCond.question = response.Text
 	takubo.forgetCond.closeChannel = make(chan struct{}, 100)
